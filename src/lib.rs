@@ -86,8 +86,8 @@ pub use client::{Anthropic, AsyncAnthropic, ClientConfig};
 pub use error::{AnthropicError, Result};
 pub use types::{
     ContentBlock, ContentBlockParam, Message, MessageContent, MessageCreateParams,
-    MessageCreateParamsBuilder, MessageParam, Model, ModelList, Role, StopReason, Tool,
-    ToolChoice, ToolInputSchema, ToolResultBlockParam, ToolUseBlock, Usage,
+    MessageCreateParamsBuilder, MessageParam, Model, ModelList, Role, StopReason, Tool, ToolChoice,
+    ToolInputSchema, ToolResultBlockParam, ToolUseBlock, Usage,
 };
 
 // Re-export streaming types

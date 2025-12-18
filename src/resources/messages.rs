@@ -138,11 +138,11 @@ impl<'a> BlockingMessages<'a> {
             .block_on(self.client.inner().messages().create_stream(params))?;
 
         // Create a new runtime handle for the blocking stream
-        let runtime = std::sync::Arc::new(
-            tokio::runtime::Runtime::new().map_err(|e| crate::AnthropicError::Config {
+        let runtime = std::sync::Arc::new(tokio::runtime::Runtime::new().map_err(|e| {
+            crate::AnthropicError::Config {
                 message: format!("Failed to create runtime for stream: {}", e),
-            })?,
-        );
+            }
+        })?);
 
         Ok(BlockingMessageStream::new(stream, runtime))
     }

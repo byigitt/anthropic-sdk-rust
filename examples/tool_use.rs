@@ -94,13 +94,15 @@ async fn main() -> Result<(), anthropic_sdk::AnthropicError> {
                                         anthropic_sdk::ContentBlock::Text { text, .. } => {
                                             ContentBlockParam::text(text.clone())
                                         }
-                                        anthropic_sdk::ContentBlock::ToolUse { id, name, input } => {
-                                            ContentBlockParam::ToolUse {
-                                                id: id.clone(),
-                                                name: name.clone(),
-                                                input: input.clone(),
-                                            }
-                                        }
+                                        anthropic_sdk::ContentBlock::ToolUse {
+                                            id,
+                                            name,
+                                            input,
+                                        } => ContentBlockParam::ToolUse {
+                                            id: id.clone(),
+                                            name: name.clone(),
+                                            input: input.clone(),
+                                        },
                                         _ => ContentBlockParam::text(""),
                                     })
                                     .collect(),

@@ -6,7 +6,7 @@ Thank you for your interest in contributing to the Anthropic Rust SDK!
 
 ### Prerequisites
 
-- Rust 1.75 or higher
+- Rust 1.82 or higher
 - Cargo (comes with Rust)
 
 ### Getting Started

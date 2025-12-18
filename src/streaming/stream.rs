@@ -114,7 +114,7 @@ impl Stream for MessageStream {
                     // Decode SSE events from bytes
                     let raw_events = this.decoder.decode(bytes);
 
-                    for raw_event in raw_events {
+                    if let Some(raw_event) = raw_events.into_iter().next() {
                         match parse_event(&raw_event) {
                             Ok(event) => {
                                 // Update state
@@ -175,7 +175,10 @@ pub struct BlockingMessageStream {
 
 impl BlockingMessageStream {
     /// Create a new blocking stream.
-    pub(crate) fn new(inner: MessageStream, runtime: std::sync::Arc<tokio::runtime::Runtime>) -> Self {
+    pub(crate) fn new(
+        inner: MessageStream,
+        runtime: std::sync::Arc<tokio::runtime::Runtime>,
+    ) -> Self {
         Self { inner, runtime }
     }
 

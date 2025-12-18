@@ -182,7 +182,9 @@ impl MessageCreateParamsBuilder {
     /// Build the MessageCreateParams.
     pub fn build(self) -> MessageCreateParams {
         MessageCreateParams {
-            model: self.model.unwrap_or_else(|| "claude-sonnet-4-5-20250929".into()),
+            model: self
+                .model
+                .unwrap_or_else(|| "claude-sonnet-4-5-20250929".into()),
             max_tokens: self.max_tokens.unwrap_or(1024),
             messages: self.messages,
             system: self.system,

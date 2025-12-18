@@ -97,14 +97,8 @@ impl AsyncAnthropic {
 
         headers.insert(ACCEPT, HeaderValue::from_static("application/json"));
         headers.insert(CONTENT_TYPE, HeaderValue::from_static("application/json"));
-        headers.insert(
-            "anthropic-version",
-            HeaderValue::from_static(API_VERSION),
-        );
-        headers.insert(
-            "x-stainless-lang",
-            HeaderValue::from_static("rust"),
-        );
+        headers.insert("anthropic-version", HeaderValue::from_static(API_VERSION));
+        headers.insert("x-stainless-lang", HeaderValue::from_static("rust"));
 
         headers
     }
@@ -118,12 +112,7 @@ impl AsyncAnthropic {
         let headers = self.build_headers();
 
         let response = self
-            .request_with_retry(|| {
-                self.http_client
-                    .get(&url)
-                    .headers(headers.clone())
-                    .send()
-            })
+            .request_with_retry(|| self.http_client.get(&url).headers(headers.clone()).send())
             .await?;
 
         self.handle_response(response).await
@@ -184,13 +173,16 @@ impl AsyncAnthropic {
                 .map(String::from);
 
             let body_text = response.text().await.unwrap_or_default();
-            let message = if let Ok(error_response) = serde_json::from_str::<ErrorResponse>(&body_text) {
-                error_response.error.message
-            } else {
-                body_text
-            };
+            let message =
+                if let Ok(error_response) = serde_json::from_str::<ErrorResponse>(&body_text) {
+                    error_response.error.message
+                } else {
+                    body_text
+                };
 
-            return Err(AnthropicError::from_status(status, message, request_id, None));
+            return Err(AnthropicError::from_status(
+                status, message, request_id, None,
+            ));
         }
 
         Ok(MessageStream::new(response))
@@ -222,22 +214,19 @@ impl AsyncAnthropic {
                     return Ok(response);
                 }
                 Err(e) => {
-                    if e.is_timeout() {
-                        last_error = Some(AnthropicError::Timeout);
-                    } else if e.is_connect() {
-                        last_error = Some(AnthropicError::Connection(e));
+                    last_error = Some(if e.is_timeout() {
+                        AnthropicError::Timeout
                     } else {
-                        last_error = Some(AnthropicError::Connection(e));
-                    }
+                        AnthropicError::Connection(e)
+                    });
 
                     if attempts < self.config.max_retries {
                         let delay = self.calculate_delay(attempts, None);
                         tokio::time::sleep(delay).await;
                         attempts += 1;
-                        continue;
+                    } else {
+                        break;
                     }
-
-                    break;
                 }
             }
         }
@@ -314,11 +303,12 @@ impl AsyncAnthropic {
             let retry_after = self.parse_retry_after(response.headers());
             let body_text = response.text().await.unwrap_or_default();
 
-            let message = if let Ok(error_response) = serde_json::from_str::<ErrorResponse>(&body_text) {
-                error_response.error.message
-            } else {
-                body_text
-            };
+            let message =
+                if let Ok(error_response) = serde_json::from_str::<ErrorResponse>(&body_text) {
+                    error_response.error.message
+                } else {
+                    body_text
+                };
 
             Err(AnthropicError::from_status(
                 status.as_u16(),

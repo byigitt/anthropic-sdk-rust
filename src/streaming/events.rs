@@ -172,17 +172,15 @@ impl StreamState {
             MessageStreamEvent::MessageStop => {
                 self.is_complete = true;
             }
-            MessageStreamEvent::ContentBlockDelta { delta, .. } => {
-                match delta {
-                    ContentBlockDelta::TextDelta { text } => {
-                        self.text.push_str(text);
-                    }
-                    ContentBlockDelta::ThinkingDelta { thinking } => {
-                        self.thinking.push_str(thinking);
-                    }
-                    _ => {}
+            MessageStreamEvent::ContentBlockDelta { delta, .. } => match delta {
+                ContentBlockDelta::TextDelta { text } => {
+                    self.text.push_str(text);
                 }
-            }
+                ContentBlockDelta::ThinkingDelta { thinking } => {
+                    self.thinking.push_str(thinking);
+                }
+                _ => {}
+            },
             _ => {}
         }
     }

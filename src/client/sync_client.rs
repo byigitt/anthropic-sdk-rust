@@ -32,10 +32,8 @@ impl Anthropic {
     pub fn with_config(config: ClientConfig) -> Result<Self> {
         let inner = AsyncAnthropic::with_config(config)?;
 
-        let runtime = Runtime::new().map_err(|e| {
-            crate::AnthropicError::Config {
-                message: format!("Failed to create tokio runtime: {}", e),
-            }
+        let runtime = Runtime::new().map_err(|e| crate::AnthropicError::Config {
+            message: format!("Failed to create tokio runtime: {}", e),
         })?;
 
         Ok(Self { inner, runtime })

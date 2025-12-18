@@ -33,7 +33,9 @@ impl SseDecoder {
 
         // Process complete lines
         while let Some(newline_pos) = self.buffer.find('\n') {
-            let line = self.buffer[..newline_pos].trim_end_matches('\r').to_string();
+            let line = self.buffer[..newline_pos]
+                .trim_end_matches('\r')
+                .to_string();
             self.buffer = self.buffer[newline_pos + 1..].to_string();
 
             if let Some(event) = self.process_line(&line) {
@@ -93,7 +95,10 @@ impl SseDecoder {
             return None;
         }
 
-        let event = self.event_type.take().unwrap_or_else(|| "message".to_string());
+        let event = self
+            .event_type
+            .take()
+            .unwrap_or_else(|| "message".to_string());
         let data = self.data_lines.join("\n");
         self.data_lines.clear();
 

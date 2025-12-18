@@ -99,9 +99,7 @@ impl ToolInputSchema {
             required: value
                 .get("required")
                 .and_then(|v| serde_json::from_value(v.clone()).ok()),
-            additional_properties: value
-                .get("additionalProperties")
-                .and_then(|v| v.as_bool()),
+            additional_properties: value.get("additionalProperties").and_then(|v| v.as_bool()),
         }
     }
 

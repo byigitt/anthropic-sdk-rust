@@ -2,7 +2,7 @@
 name = "anthropic-sdk"
 version = "0.1.0"
 edition = "2021"
-rust-version = "1.75"
+rust-version = "1.82"
 description = "Official Rust SDK for the Anthropic API"
 license = "MIT"
 repository = "https://github.com/byigitt/anthropic-sdk-rust"
