@@ -302,7 +302,7 @@ let client = AsyncAnthropic::with_config(config)?;
 
 ## Requirements
 
-- Rust 1.82 or higher
+- Rust 1.83 or higher
 - tokio runtime (for async client)
 
 ## Examples
